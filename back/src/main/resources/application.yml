@@ -1,9 +1,9 @@
 spring:
   datasource:
-    url: jdbc:h2:tcp://localhost/~/test
-    username: sa
-    password:
-    driver-class-name: org.h2.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://banryeohaedyuo.cevfozasnsce.ap-northeast-2.rds.amazonaws.com:3306/BanRyeohaeDyuo?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: admin
+    password: Wmf11223300
 
   jpa:
     hibernate:
