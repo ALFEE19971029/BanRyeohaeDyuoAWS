@@ -33,7 +33,7 @@ public class KakaoUserService {
     }
 
     private String RestApiKey = "3d10b8b23a5d95b5cc73a5c8da96b089";
-    private String RedirectURL = "http://localhost:8080/api/oauth/token";
+    private String RedirectURL = "http://13.124.214.183:8080/api/oauth/token";
 
 
 
@@ -95,8 +95,8 @@ public class KakaoUserService {
         String jwtToken = JWT.create()
                 .withSubject(String.valueOf(kakaoUser.getUserId()))
                 .withExpiresAt(new Date(System.currentTimeMillis() + JwtProperties.EXPIRATION_TIME))
-                .withClaim("kakaoId",kakaoUser.getKakaoId())
                 .withClaim("kakaoNickname",kakaoUser.getKakaoNickname())
+                .withClaim("kakaoId",kakaoUser.getKakaoId())
                 .sign(Algorithm.HMAC512(JwtProperties.SECRET));
         return jwtToken;
     }
