@@ -33,7 +33,7 @@ public class KakaoUserService {
     }
 
     private String RestApiKey = "3d10b8b23a5d95b5cc73a5c8da96b089";
-    private String RedirectURL = "http://13.124.214.183:8080/api/oauth/token";
+    private String RedirectURL = "http://localhost:3000/oauth";
 
 
 

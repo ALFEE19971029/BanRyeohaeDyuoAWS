@@ -27,7 +27,7 @@ public class KakaoUserController {
         this.kakaoUserRepository = kakaoUserRepository;
     }
 
-    @GetMapping("/oauth/token")
+    @GetMapping("/oauth")
     public ResponseEntity getLogin(@RequestParam("code") String code){
         OauthToken oauthToken = kakaoUserService.getAccessToken(code);
 
