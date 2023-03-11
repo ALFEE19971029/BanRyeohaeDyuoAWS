@@ -9,11 +9,9 @@ import lombok.NoArgsConstructor;
 public class ScrapSaveRequestDto {
 
     private Long postId;
-    private String description;
 
     @Builder
-    public ScrapSaveRequestDto(Long postId, String description) {
+    public ScrapSaveRequestDto(Long postId) {
         this.postId = postId;
-        this.description = description;
     }
 }

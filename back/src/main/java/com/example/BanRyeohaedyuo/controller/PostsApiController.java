@@ -5,6 +5,7 @@ import com.example.BanRyeohaedyuo.controller.dto.posts.PostsResponseDto;
 import com.example.BanRyeohaedyuo.controller.dto.posts.PostsSaveRequestDto;
 import com.example.BanRyeohaedyuo.controller.dto.posts.PostsUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,14 +20,15 @@ public class PostsApiController {
 
     @PostMapping("/posts")
     public Long save(HttpServletRequest request,@RequestBody PostsSaveRequestDto requestDto){
-        //id필드 리퀘스트에서 가져오기 -> 넘기기
         Long userId = Long.parseLong(request.getHeader("userId"));
+        //Long userId = (Long) request.getAttribute("userId");
         return postsService.save(userId, requestDto);
     }
 
     @PutMapping("/posts/{postsId}")
     public Long update(HttpServletRequest request,@PathVariable Long postsId, @RequestBody PostsUpdateRequestDto requestDto){
         Long userId = Long.parseLong(request.getHeader("userId"));
+        //Long userId = (Long) request.getAttribute("userId");
         return postsService.update(userId, postsId, requestDto);
     }
 
@@ -36,20 +38,25 @@ public class PostsApiController {
     }
 
     @DeleteMapping("/posts/{postsId}")
-    public void delete(HttpServletRequest request, @PathVariable Long postsId){
-        Long userId = (Long) request.getAttribute("userId");
+    public ResponseEntity delete(HttpServletRequest request, @PathVariable Long postsId){
+        Long userId = Long.parseLong(request.getHeader("userId"));
+        // Long userId = (Long) request.getAttribute("userId");
         postsService.delete(userId, postsId);
+        return ResponseEntity.ok().body("success");
     }
 
     @PostMapping("/posts/{postsId}")
-    public void changeStatus(HttpServletRequest request, @PathVariable Long postsId){
-        Long userId = (Long) request.getAttribute("userId");
+    public ResponseEntity changeStatus(HttpServletRequest request, @PathVariable Long postsId){
+        Long userId = Long.parseLong(request.getHeader("userId"));
+        //Long userId = (Long) request.getAttribute("userId");
         postsService.changeStatus(userId, postsId);
+        return ResponseEntity.ok().body("success");
     }
 
     @GetMapping("/posts")
     public List<PostsResponseDto> findByUserId(HttpServletRequest request){
         Long userId = Long.parseLong(request.getHeader("userId"));
+        //Long userId = (Long) request.getAttribute("userId");
         return postsService.findByUserId(userId);
     }
 
@@ -61,6 +68,7 @@ public class PostsApiController {
     @GetMapping("/posts/mypage")
     public List<PostsResponseDto> postsForMypage(HttpServletRequest request){
         Long userId = Long.parseLong(request.getHeader("userId"));
+        //Long userId = (Long) request.getAttribute("userId");
         return postsService.postsForMypage(userId);
     }
 }

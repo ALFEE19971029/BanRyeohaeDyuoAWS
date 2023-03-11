@@ -2,7 +2,7 @@ package com.example.BanRyeohaedyuo.service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.example.BanRyeohaedyuo.controller.dto.kakaologin.LoginDto;
+import com.example.BanRyeohaedyuo.controller.dto.kakaouser.LoginDto;
 import com.example.BanRyeohaedyuo.domain.KakaoUser;
 import com.example.BanRyeohaedyuo.domain.enumtype.Grade;
 import com.example.BanRyeohaedyuo.domain.login.JwtProperties;
@@ -17,13 +17,12 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 public class KakaoUserService {
@@ -37,8 +36,6 @@ public class KakaoUserService {
 
     private String RestApiKey = "3d10b8b23a5d95b5cc73a5c8da96b089";
     private String RedirectURL = "http://localhost:3000/oauth";
-
-
 
     public OauthToken getAccessToken(String code){
         RestTemplate rt = new RestTemplate();
@@ -73,6 +70,7 @@ public class KakaoUserService {
         return oauthToken;
     }
 
+    @Transactional
     public LoginDto saveUserAndGetToken(String token) {
         KakaoProfile profile = findProfile(token);
 
@@ -128,7 +126,11 @@ public class KakaoUserService {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-
         return kakaoProfile;
+    }
+
+    @Transactional
+    public KakaoUser findUserByUserId(Long userId){
+        return kakaoUserRepository.findByUserId(userId);
     }
 }

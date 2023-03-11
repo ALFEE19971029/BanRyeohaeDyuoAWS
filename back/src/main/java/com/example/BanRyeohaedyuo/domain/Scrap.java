@@ -27,17 +27,13 @@ public class Scrap {
     @JoinColumn(name = "post_id")
     private Posts posts;
 
-    @Column(length = 1000)
-    private String description;
-
     @Column(name = "create_time")
     @CreationTimestamp
     private Timestamp createTime;
 
     @Builder
-    public Scrap(KakaoUser kakaoUser, Posts posts, String description) {
+    public Scrap(KakaoUser kakaoUser, Posts posts) {
         this.kakaoUser = kakaoUser;
         this.posts = posts;
-        this.description = description;
     }
 }

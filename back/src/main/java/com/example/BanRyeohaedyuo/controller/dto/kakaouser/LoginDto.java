@@ -1,4 +1,4 @@
-package com.example.BanRyeohaedyuo.controller.dto.kakaologin;
+package com.example.BanRyeohaedyuo.controller.dto.kakaouser;
 
 import com.example.BanRyeohaedyuo.domain.KakaoUser;
 import lombok.Getter;

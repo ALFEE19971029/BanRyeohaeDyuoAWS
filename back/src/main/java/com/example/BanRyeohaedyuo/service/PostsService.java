@@ -14,6 +14,7 @@ import com.example.BanRyeohaedyuo.controller.dto.posts.PostsUpdateRequestDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -144,7 +145,7 @@ public class PostsService {
     @Transactional
     public List<PostsResponseDto> findByPageNum(Integer pageNum){
         pageNum -= 1;
-        PageRequest pageRequest = PageRequest.of(pageNum,9);
+        PageRequest pageRequest = PageRequest.of(pageNum,9, Sort.Direction.DESC, "updateTime");
         Page<Posts> posts = postsRepository.findAll(pageRequest);
         List<Posts> content = posts.getContent();
         List<PostsResponseDto> responseDtos = new ArrayList<>();
@@ -171,7 +172,7 @@ public class PostsService {
 
     @Transactional
     public List<PostsResponseDto> postsForMypage(Long userId){
-        PageRequest pageRequest = PageRequest.of(0,5);
+        PageRequest pageRequest = PageRequest.of(0,5, Sort.Direction.DESC, "updateTime");
         KakaoUser kakaoUser = kakaoUserRepository.findByUserId(userId);
         List<Posts> posts = postsRepository.findByKakaoUser(kakaoUser,pageRequest);
         List<PostsResponseDto> responseDtos = new ArrayList<>();
