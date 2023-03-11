@@ -2,6 +2,7 @@ package com.example.BanRyeohaedyuo.service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.example.BanRyeohaedyuo.controller.dto.kakaologin.LoginDto;
 import com.example.BanRyeohaedyuo.domain.KakaoUser;
 import com.example.BanRyeohaedyuo.domain.enumtype.Grade;
 import com.example.BanRyeohaedyuo.domain.login.JwtProperties;
@@ -21,6 +22,8 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class KakaoUserService {
@@ -70,7 +73,7 @@ public class KakaoUserService {
         return oauthToken;
     }
 
-    public String saveUserAndGetToken(String token) {
+    public LoginDto saveUserAndGetToken(String token) {
         KakaoProfile profile = findProfile(token);
 
         KakaoUser kakaoUser = kakaoUserRepository.findByKakaoNickname(profile.getProperties().getNickname());
@@ -88,7 +91,7 @@ public class KakaoUserService {
             kakaoUserRepository.save(kakaoUser);
         }
 
-        return createToken(kakaoUser);
+        return new LoginDto(createToken(kakaoUser),kakaoUser);
     }
 
     public String createToken(KakaoUser kakaoUser){

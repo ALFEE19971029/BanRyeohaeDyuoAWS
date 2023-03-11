@@ -1,5 +1,6 @@
 package com.example.BanRyeohaedyuo.controller;
 
+import com.example.BanRyeohaedyuo.controller.dto.kakaologin.LoginDto;
 import com.example.BanRyeohaedyuo.domain.KakaoUser;
 import com.example.BanRyeohaedyuo.domain.login.JwtProperties;
 import com.example.BanRyeohaedyuo.domain.login.OauthToken;
@@ -19,23 +20,21 @@ import org.springframework.web.bind.annotation.*;
 public class KakaoUserController {
 
     private KakaoUserService kakaoUserService;
-    private KakaoUserRepository kakaoUserRepository;
 
     @Autowired
-    public KakaoUserController(KakaoUserService kakaoUserService, KakaoUserRepository kakaoUserRepository) {
+    public KakaoUserController(KakaoUserService kakaoUserService) {
         this.kakaoUserService = kakaoUserService;
-        this.kakaoUserRepository = kakaoUserRepository;
     }
 
     @GetMapping("/oauth")
     public ResponseEntity getLogin(@RequestParam("code") String code){
         OauthToken oauthToken = kakaoUserService.getAccessToken(code);
 
-        String jwtToken = kakaoUserService.saveUserAndGetToken(oauthToken.getAccess_token());
+        LoginDto dto = kakaoUserService.saveUserAndGetToken(oauthToken.getAccess_token());
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + jwtToken);
+        headers.add(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + dto.getJwt());
 
-        return ResponseEntity.ok().headers(headers).body("success");
+        return ResponseEntity.ok().headers(headers).body(dto.getKakaoUser());
     }
 }
