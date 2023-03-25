@@ -1,5 +1,6 @@
 package com.example.BanRyeohaedyuo.service;
 
+import com.example.BanRyeohaedyuo.controller.dto.posts.PostsWithScrapResponse;
 import com.example.BanRyeohaedyuo.domain.KakaoUser;
 import com.example.BanRyeohaedyuo.domain.Posts;
 import com.example.BanRyeohaedyuo.domain.Scrap;
@@ -75,14 +76,36 @@ public class PostsService {
     }
 
     @Transactional
-    public PostsResponseDto findById(Long postsId){
+    public PostsWithScrapResponse findById(Long userId, Long postsId){
         Posts entity = postsRepository.findById(postsId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id="+ postsId));
         String kakaoNickname = entity.getKakaoUser().getKakaoNickname();
         Address address = entity.getAddress();
         Category category = entity.getCategory();
         Purpose purpose = entity.getPurpose();
-        return PostsResponseDto.builder()
+        List<Scrap> scraps = scrapRespository.findByUserId(userId);
+        for(Scrap s: scraps){
+            if(s.getPosts().getPostsId().equals(postsId)){
+                return PostsWithScrapResponse.builder()
+                        .postId(postsId)
+                        .kakaoNickname(kakaoNickname)
+                        .title(entity.getTitle())
+                        .description(entity.getDescription())
+                        .address(address)
+                        .image1(entity.getImage1())
+                        .image2(entity.getImage2())
+                        .image3(entity.getImage3())
+                        .category(category)
+                        .point(entity.getPoint())
+                        .purpose(purpose)
+                        .status(entity.getStatus())
+                        .scrap(true)
+                        .updateTime(entity.getUpdateTime())
+                        .createTime(entity.getCreateTime())
+                        .build();
+            }
+        }
+        return PostsWithScrapResponse.builder()
                 .postId(postsId)
                 .kakaoNickname(kakaoNickname)
                 .title(entity.getTitle())
@@ -95,6 +118,7 @@ public class PostsService {
                 .point(entity.getPoint())
                 .purpose(purpose)
                 .status(entity.getStatus())
+                .scrap(false)
                 .updateTime(entity.getUpdateTime())
                 .createTime(entity.getCreateTime())
                 .build();
@@ -147,14 +171,12 @@ public class PostsService {
     }
 
     @Transactional
-    public List<PostsResponseDto> findByPageNum(Long userId,Integer pageNum){
+    public List<PostsResponseDto> findByPageNum(Integer pageNum){
         pageNum -= 1;
         PageRequest pageRequest = PageRequest.of(pageNum,5, Sort.Direction.DESC, "updateTime");
         Page<Posts> posts = postsRepository.findAll(pageRequest);
         List<Posts> content = posts.getContent();
         List<PostsResponseDto> responseDtos = new ArrayList<>();
-
-        List<Scrap> scraps = scrapRespository.findByUserId(userId);
         for(Posts p : content){
             responseDtos.add(PostsResponseDto.builder()
                     .postId(p.getPostsId())
@@ -169,17 +191,9 @@ public class PostsService {
                     .point(p.getPoint())
                     .purpose(p.getPurpose())
                     .status(p.getStatus())
-                    .scrap(false)
                     .updateTime(p.getUpdateTime())
                     .createTime(p.getCreateTime())
                     .build());
-        }
-        for(PostsResponseDto dto:responseDtos){
-            for(Scrap s:scraps){
-                if(dto.getPostId().equals(s.getPosts().getPostsId())){
-                    dto.setScrap(true);
-                }
-            }
         }
         return responseDtos;
     }

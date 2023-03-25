@@ -1,5 +1,6 @@
 package com.example.BanRyeohaedyuo.controller;
 
+import com.example.BanRyeohaedyuo.controller.dto.posts.PostsWithScrapResponse;
 import com.example.BanRyeohaedyuo.service.PostsService;
 import com.example.BanRyeohaedyuo.controller.dto.posts.PostsResponseDto;
 import com.example.BanRyeohaedyuo.controller.dto.posts.PostsSaveRequestDto;
@@ -33,8 +34,9 @@ public class PostsApiController {
     }
 
     @GetMapping("/posts/{postsId}")
-    public PostsResponseDto findById(@PathVariable Long postsId){
-        return postsService.findById(postsId);
+    public PostsWithScrapResponse findById(HttpServletRequest request,@PathVariable Long postsId){
+        Long userId = Long.parseLong(request.getHeader("userId"));
+        return postsService.findById(userId,postsId);
     }
 
     @DeleteMapping("/posts/{postsId}")
@@ -61,9 +63,8 @@ public class PostsApiController {
     }
 
     @GetMapping("/posts/page/{pageNum}")
-    public List<PostsResponseDto> findByPageNum(HttpServletRequest request,@PathVariable Integer pageNum){
-        Long userId = Long.parseLong(request.getHeader("userId"));
-        return postsService.findByPageNum(userId,pageNum);
+    public List<PostsResponseDto> findByPageNum(@PathVariable Integer pageNum){
+        return postsService.findByPageNum(pageNum);
     }
 
     @GetMapping("/posts/mypage")

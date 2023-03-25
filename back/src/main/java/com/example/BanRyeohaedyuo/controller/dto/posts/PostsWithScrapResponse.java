@@ -1,7 +1,5 @@
 package com.example.BanRyeohaedyuo.controller.dto.posts;
 
-import com.example.BanRyeohaedyuo.domain.KakaoUser;
-import com.example.BanRyeohaedyuo.domain.Posts;
 import com.example.BanRyeohaedyuo.domain.embedded.Address;
 import com.example.BanRyeohaedyuo.domain.enumtype.Category;
 import com.example.BanRyeohaedyuo.domain.enumtype.Purpose;
@@ -14,7 +12,7 @@ import java.sql.Timestamp;
 
 @Getter
 @Setter
-public class PostsResponseDto {
+public class PostsWithScrapResponse {
     private Long postId;
     private String kakaoNickname;
     private String title;
@@ -27,11 +25,12 @@ public class PostsResponseDto {
     private int point;
     private Purpose purpose;
     private Status status;
+    private Boolean scrap;
     private Timestamp updateTime;
     private Timestamp createTime;
 
     @Builder
-    public PostsResponseDto(Long postId, String kakaoNickname, String title, String description, Address address, String image1, String image2, String image3, Category category, int point, Purpose purpose, Status status,Timestamp updateTime, Timestamp createTime) {
+    public PostsWithScrapResponse(Long postId, String kakaoNickname, String title, String description, Address address, String image1, String image2, String image3, Category category, int point, Purpose purpose, Status status,Boolean scrap,Timestamp updateTime, Timestamp createTime) {
         this.postId = postId;
         this.kakaoNickname = kakaoNickname;
         this.title = title;
@@ -44,6 +43,7 @@ public class PostsResponseDto {
         this.point = point;
         this.purpose = purpose;
         this.status = status;
+        this.scrap = scrap;
         this.updateTime = updateTime;
         this.createTime = createTime;
     }
