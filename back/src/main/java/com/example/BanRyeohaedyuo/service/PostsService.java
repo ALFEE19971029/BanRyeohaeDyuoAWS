@@ -2,6 +2,7 @@ package com.example.BanRyeohaedyuo.service;
 
 import com.example.BanRyeohaedyuo.domain.KakaoUser;
 import com.example.BanRyeohaedyuo.domain.Posts;
+import com.example.BanRyeohaedyuo.domain.Scrap;
 import com.example.BanRyeohaedyuo.domain.embedded.Address;
 import com.example.BanRyeohaedyuo.domain.enumtype.Category;
 import com.example.BanRyeohaedyuo.domain.enumtype.Purpose;
@@ -11,6 +12,7 @@ import com.example.BanRyeohaedyuo.repository.PostsRepository;
 import com.example.BanRyeohaedyuo.controller.dto.posts.PostsResponseDto;
 import com.example.BanRyeohaedyuo.controller.dto.posts.PostsSaveRequestDto;
 import com.example.BanRyeohaedyuo.controller.dto.posts.PostsUpdateRequestDto;
+import com.example.BanRyeohaedyuo.repository.ScrapRespository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,11 +28,13 @@ public class PostsService {
 
     private final PostsRepository postsRepository;
     private final KakaoUserRepository kakaoUserRepository;
+    private final ScrapRespository scrapRespository;
 
     @Autowired
-    public PostsService(PostsRepository postsRepository, KakaoUserRepository kakaoUserRepository) {
+    public PostsService(PostsRepository postsRepository, KakaoUserRepository kakaoUserRepository, ScrapRespository scrapRespository) {
         this.postsRepository = postsRepository;
         this.kakaoUserRepository = kakaoUserRepository;
+        this.scrapRespository = scrapRespository;
     }
 
     @Transactional
@@ -143,12 +147,14 @@ public class PostsService {
     }
 
     @Transactional
-    public List<PostsResponseDto> findByPageNum(Integer pageNum){
+    public List<PostsResponseDto> findByPageNum(Long userId,Integer pageNum){
         pageNum -= 1;
-        PageRequest pageRequest = PageRequest.of(pageNum,9, Sort.Direction.DESC, "updateTime");
+        PageRequest pageRequest = PageRequest.of(pageNum,5, Sort.Direction.DESC, "updateTime");
         Page<Posts> posts = postsRepository.findAll(pageRequest);
         List<Posts> content = posts.getContent();
         List<PostsResponseDto> responseDtos = new ArrayList<>();
+
+        List<Scrap> scraps = scrapRespository.findByUserId(userId);
         for(Posts p : content){
             responseDtos.add(PostsResponseDto.builder()
                     .postId(p.getPostsId())
@@ -163,9 +169,17 @@ public class PostsService {
                     .point(p.getPoint())
                     .purpose(p.getPurpose())
                     .status(p.getStatus())
+                    .scrap(false)
                     .updateTime(p.getUpdateTime())
                     .createTime(p.getCreateTime())
                     .build());
+        }
+        for(PostsResponseDto dto:responseDtos){
+            for(Scrap s:scraps){
+                if(dto.getPostId().equals(s.getPosts().getPostsId())){
+                    dto.setScrap(true);
+                }
+            }
         }
         return responseDtos;
     }

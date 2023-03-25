@@ -61,8 +61,9 @@ public class PostsApiController {
     }
 
     @GetMapping("/posts/page/{pageNum}")
-    public List<PostsResponseDto> findByPageNum(@PathVariable Integer pageNum){
-        return postsService.findByPageNum(pageNum);
+    public List<PostsResponseDto> findByPageNum(HttpServletRequest request,@PathVariable Integer pageNum){
+        Long userId = Long.parseLong(request.getHeader("userId"));
+        return postsService.findByPageNum(userId,pageNum);
     }
 
     @GetMapping("/posts/mypage")

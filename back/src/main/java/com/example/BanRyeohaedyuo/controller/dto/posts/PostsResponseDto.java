@@ -8,10 +8,12 @@ import com.example.BanRyeohaedyuo.domain.enumtype.Purpose;
 import com.example.BanRyeohaedyuo.domain.enumtype.Status;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.sql.Timestamp;
 
 @Getter
+@Setter
 public class PostsResponseDto {
     private Long postId;
     private String kakaoNickname;
@@ -25,11 +27,12 @@ public class PostsResponseDto {
     private int point;
     private Purpose purpose;
     private Status status;
+    private Boolean scrap;
     private Timestamp updateTime;
     private Timestamp createTime;
 
     @Builder
-    public PostsResponseDto(Long postId, String kakaoNickname, String title, String description, Address address, String image1, String image2, String image3, Category category, int point, Purpose purpose, Status status, Timestamp updateTime, Timestamp createTime) {
+    public PostsResponseDto(Long postId, String kakaoNickname, String title, String description, Address address, String image1, String image2, String image3, Category category, int point, Purpose purpose, Status status, Boolean scrap,Timestamp updateTime, Timestamp createTime) {
         this.postId = postId;
         this.kakaoNickname = kakaoNickname;
         this.title = title;
@@ -42,6 +45,7 @@ public class PostsResponseDto {
         this.point = point;
         this.purpose = purpose;
         this.status = status;
+        this.scrap = scrap;
         this.updateTime = updateTime;
         this.createTime = createTime;
     }
